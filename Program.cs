@@ -1,17 +1,16 @@
-
-// using yönergeleri 
 using Microsoft.EntityFrameworkCore;
 using TrelloClone.API.Data;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore; // 1. BU USING SATIRINI EN ÜSTE EKLE
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Hatalý olan builder.Services.AddEndpointsApiExplorer(); ve AddSwaggerGen(); satýrlarýný TAMAMEN SÝL.
 
 // JWT Kimlik Doðrulama Servisi
 builder.Services.AddAuthentication(options =>
@@ -34,11 +33,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(); // .NET 9'un kendi OpenApi servisi kalýyor
 
 var app = builder.Build();
 
@@ -46,14 +42,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(); // 2. ESKÝ APPSwagger SATIRLARINI SÝLÝP SADECE BUNU YAZ
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
