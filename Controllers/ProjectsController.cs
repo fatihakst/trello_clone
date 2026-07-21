@@ -22,6 +22,19 @@ namespace TrelloClone.API.Controllers
         // Token'dan giriş yapan kullanıcının ID'sini alan yardımcı metot
         private int GetUserId() => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProject(int id)
+        {
+            var project = await _context.Projects.FindAsync(id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(project);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetMyProjects()
         {
