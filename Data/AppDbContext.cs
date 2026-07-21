@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using TrelloClone.API.Models;
 
+
+
 namespace TrelloClone.API.Data
 {
     public class AppDbContext : DbContext
@@ -13,6 +15,7 @@ namespace TrelloClone.API.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<TodoList> Lists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
