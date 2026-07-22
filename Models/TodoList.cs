@@ -14,6 +14,8 @@ namespace TrelloClone.API.Models
         [Required]
         public int ProjectId { get; set; }
 
+        public int Order { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -22,6 +22,7 @@ namespace TrelloClone.API.Controllers
         {
             var lists = await _context.Lists
                 .Where(l => l.ProjectId == projectId)
+                .OrderBy(l => l.Order)
                 .ToListAsync();
 
             return Ok(lists);
@@ -40,6 +41,23 @@ namespace TrelloClone.API.Controllers
 
             return Ok(list);
         }
+
+        [HttpPut("reorder")]
+        public async Task<IActionResult> ReorderLists([FromBody] List<ListReorderDto> listsData)
+        {
+            foreach (var item in listsData)
+            {
+                var list = await _context.Lists.FindAsync(item.Id);
+                if (list != null)
+                {
+                    list.Order = item.Order;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteList(int id)
         {
@@ -56,5 +74,10 @@ namespace TrelloClone.API.Controllers
 
             return NoContent();
         }
+    }
+    public class ListReorderDto
+    {
+        public int Id { get; set; }
+        public int Order { get; set; }
     }
 }
