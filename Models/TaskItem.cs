@@ -28,5 +28,6 @@ namespace TrelloClone.API.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public int Order { get; set; }
     }
 }

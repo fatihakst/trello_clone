@@ -31,6 +31,7 @@ namespace TrelloClone.API.Controllers
 
             var tasks = await _context.Tasks
                 .Where(t => t.ProjectId == projectId)
+                .OrderBy(t => t.Order) // YENİ: Görevler artık veritabanındaki Order değerine göre sıralı gelecek
                 .ToListAsync();
 
             return Ok(tasks);
@@ -60,6 +61,22 @@ namespace TrelloClone.API.Controllers
             return Ok(task);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            // Güvenlik kontrolü eklemek istersen burada projeyi ve kullanıcıyı doğrulayabilirsin
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null)
+            {
+                return NotFound("Görev bulunamadı.");
+            }
+
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            return NoContent(); // Başarıyla silindiğinde 204 döner
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, TaskUpdateDto dto)
         {
@@ -79,5 +96,30 @@ namespace TrelloClone.API.Controllers
             await _context.SaveChangesAsync();
             return Ok(task);
         }
+
+        // YENİ: Sürükle-bırak sonrası yeni sırayı ve listeyi toplu olarak kaydeden metot
+        [HttpPut("reorder")]
+        public async Task<IActionResult> ReorderTasks([FromBody] List<ReorderDto> tasksData)
+        {
+            foreach (var item in tasksData)
+            {
+                var task = await _context.Tasks.FindAsync(item.Id);
+                if (task != null)
+                {
+                    task.Order = item.Order;
+                    task.Status = item.Status;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+    }
+
+    // YENİ: Frontend'den gelen sıralama verisini karşılayacak DTO
+    public class ReorderDto
+    {
+        public int Id { get; set; }
+        public int Order { get; set; }
+        public string Status { get; set; }
     }
 }
