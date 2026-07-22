@@ -94,7 +94,7 @@ namespace TrelloClone.API.Controllers
             task.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return Ok(task);
+            return NoContent();
         }
 
         // YENİ: Sürükle-bırak sonrası yeni sırayı ve listeyi toplu olarak kaydeden metot
