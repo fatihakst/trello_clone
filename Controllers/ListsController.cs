@@ -40,5 +40,21 @@ namespace TrelloClone.API.Controllers
 
             return Ok(list);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteList(int id)
+        {
+            var list = await _context.Lists.FindAsync(id);
+            if (list == null) return NotFound("Liste bulunamadı.");
+
+            // Listeye ait olan tüm görevleri bul ve tamamen temizle
+            var tasksToDelete = await _context.Tasks.Where(t => t.Status == id.ToString()).ToListAsync();
+            _context.Tasks.RemoveRange(tasksToDelete);
+
+            // Listeyi sil
+            _context.Lists.Remove(list);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
