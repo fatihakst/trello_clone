@@ -31,7 +31,7 @@ namespace TrelloClone.API.Controllers
 
             var tasks = await _context.Tasks
                 .Where(t => t.ProjectId == projectId)
-                .OrderBy(t => t.Order) // YENİ: Görevler artık veritabanındaki Order değerine göre sıralı gelecek
+                .OrderBy(t => t.Order) // Görevler artık veritabanındaki Order değerine göre sıralı gelecek
                 .ToListAsync();
 
             return Ok(tasks);
@@ -51,6 +51,8 @@ namespace TrelloClone.API.Controllers
                 Status = dto.Status,
                 ProjectId = dto.ProjectId,
                 AssignedToUserId = dto.AssignedToUserId,
+                LabelText = dto.LabelText,   // YENİ EKLENDİ
+                LabelColor = dto.LabelColor, // YENİ EKLENDİ
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -91,13 +93,15 @@ namespace TrelloClone.API.Controllers
             task.Description = dto.Description;
             task.Status = dto.Status;
             task.AssignedToUserId = dto.AssignedToUserId;
+            task.LabelText = dto.LabelText;   // YENİ EKLENDİ
+            task.LabelColor = dto.LabelColor; // YENİ EKLENDİ
             task.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // YENİ: Sürükle-bırak sonrası yeni sırayı ve listeyi toplu olarak kaydeden metot
+        // Sürükle-bırak sonrası yeni sırayı ve listeyi toplu olarak kaydeden metot
         [HttpPut("reorder")]
         public async Task<IActionResult> ReorderTasks([FromBody] List<ReorderDto> tasksData)
         {
@@ -115,7 +119,7 @@ namespace TrelloClone.API.Controllers
         }
     }
 
-    // YENİ: Frontend'den gelen sıralama verisini karşılayacak DTO
+    // Frontend'den gelen sıralama verisini karşılayacak DTO
     public class ReorderDto
     {
         public int Id { get; set; }

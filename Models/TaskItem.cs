@@ -29,5 +29,8 @@ namespace TrelloClone.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public int Order { get; set; }
+
+        public string? LabelText { get; set; }  // Örn: "Acil", "Frontend", "Bug"
+        public string? LabelColor { get; set; }
     }
 }

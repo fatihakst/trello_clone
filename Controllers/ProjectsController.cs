@@ -71,6 +71,8 @@ namespace TrelloClone.API.Controllers
             return Ok(project);
         }
 
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
